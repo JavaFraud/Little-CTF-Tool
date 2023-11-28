@@ -37,11 +37,11 @@ def get_file_header_info(file_hex, file_sigs: dict):
     return result
 #-----------------------------------------------------------
 
-file_to_analyse_path = os.getcwd()+'\\'+'testFile.png'
-file_sigs_json_path = os.getcwd()+'\\'+'file_sigs.json'
+#file_to_analyse_path = os.getcwd()+'\\'+'testFile.png'
+#file_sigs_json_path = os.getcwd()+'\\'+'file_sigs.json'
 
-file_to_analyse_hex = read_file_hex(file_to_analyse_path)
-file_sigs = get_file_sigs_from_json(file_sigs_json_path)
+#file_to_analyse_hex = read_file_hex(file_to_analyse_path)
+#file_sigs = get_file_sigs_from_json(file_sigs_json_path)
 
-result = get_file_header_info(file_to_analyse_hex, file_sigs)
-print(result)
+#result = get_file_header_info(file_to_analyse_hex, file_sigs)
+#print(result)
