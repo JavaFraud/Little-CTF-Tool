@@ -9,14 +9,12 @@ def get_file_sigs_from_json(path: str):
     return all_file_sigs
 
 def get_file_sig_info(some_file_sig: dict):
-    return """
-    File description: {}
-    Header (hex): {}
-    File extension: {}
-    FileClass: {}
-    Header offset: {}
-    Trailer (hex): {}
-    """.format(
+    return """File description: {}
+Header (hex): {}
+File extension: {}
+FileClass: {}
+Header offset: {}
+Trailer (hex): {}""".format(
     some_file_sig["File description"],
     some_file_sig["Header (hex)"],
     some_file_sig["File extension"],
@@ -31,10 +29,14 @@ def read_file_hex(file_path):
         return hex_data
 
 def get_file_header_info(file_hex, file_sigs: dict):
+    result = 0
     for file_sig in file_sigs:
         if file_hex[0:len(file_sig["Header (hex)"].lower().replace(' ',''))] == file_sig["Header (hex)"].lower().replace(' ',''):
             result = get_file_sig_info(file_sig)
-    return result
+    if result == 0:
+        return "The file_sigs.json file does not\ncontain header informations\nfor this type of files"
+    else: 
+        return result
 #-----------------------------------------------------------
 
 #file_to_analyse_path = os.getcwd()+'\\'+'testFile.png'

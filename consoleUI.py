@@ -18,14 +18,14 @@ def main(stdscr):
     list_of_files = file_list.get_file_list(os.getcwd())
     current_option = 0
     result_is_asked = False
-    while result_is_asked != True:
-        stdscr.clear()
+    while True:
+        
 
         for i, file in enumerate(list_of_files):
             if i == current_option:
-                stdscr.addstr(i, 0, file, curses.A_REVERSE)  # Mettre en surbrillance l'option sélectionnée
+                stdscr.addstr(i, 50, file, curses.A_REVERSE)
             else:
-                stdscr.addstr(i, 0, file)
+                stdscr.addstr(i, 50, file)
 
         stdscr.refresh()
         key = stdscr.getch()
@@ -35,12 +35,12 @@ def main(stdscr):
         elif key == curses.KEY_DOWN and current_option < len(list_of_files) - 1:
             current_option += 1
         elif key == curses.KEY_RIGHT:
-            #file_to_analyse_hex = fs.read_file_hex(list_of_files[current_option])
-            #file_sigs_info = fs.get_file_header_info(file_to_analyse_hex, file_sigs)
+            stdscr.clear()
+            file_to_analyse_hex = fs.read_file_hex(list_of_files[current_option])
+            file_sigs_info = fs.get_file_header_info(file_to_analyse_hex, file_sigs)
+            stdscr.addstr(0, 0, file_sigs_info)
             stdscr.refresh()
-            stdscr.addstr(0, 0, "lol")
             print("Right pressed")
-            result_is_asked = True
             
         elif key == 27:  # 27 est la valeur ASCII pour la touche Échap, sortir de la boucle si Échap est pressé
             break
