@@ -19,13 +19,15 @@ def main(stdscr):
     current_option = 0
     result_is_asked = False
     while True:
-        
-
+        stdscr.addstr(0, 0, "─"*13+" FILE INFORMATIONS "+"─"*14, curses.color_pair(2))
+        stdscr.addstr(0, 46, "╮", curses.color_pair(2))
         for i, file in enumerate(list_of_files):
+            stdscr.addstr(i+1, 46, "│", curses.color_pair(2))
+            stdscr.addstr(i+2, 46, "│", curses.color_pair(2))
             if i == current_option:
-                stdscr.addstr(i, 50, file, curses.A_REVERSE)
+                stdscr.addstr(i+2, 50, file, curses.A_REVERSE)
             else:
-                stdscr.addstr(i, 50, file)
+                stdscr.addstr(i+2, 50, file)
 
         stdscr.refresh()
         key = stdscr.getch()
@@ -38,7 +40,7 @@ def main(stdscr):
             stdscr.clear()
             file_to_analyse_hex = fs.read_file_hex(list_of_files[current_option])
             file_sigs_info = fs.get_file_header_info(file_to_analyse_hex, file_sigs)
-            stdscr.addstr(0, 0, file_sigs_info)
+            stdscr.addstr(2, 0, file_sigs_info)
             stdscr.refresh()
             print("Right pressed")
             
