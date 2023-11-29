@@ -17,7 +17,7 @@ def main(stdscr):
     
     list_of_files = file_list.get_file_list(os.getcwd())
     current_option = 0
-    result_is_asked = False
+
     while True:
         stdscr.addstr(0, 0, "─"*13+" FILE INFORMATIONS "+"─"*14, curses.color_pair(2))
         stdscr.addstr(0, 46, "╮", curses.color_pair(2))
