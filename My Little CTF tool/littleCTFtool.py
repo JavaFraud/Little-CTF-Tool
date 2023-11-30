@@ -3,6 +3,7 @@ import file_list
 import file_signatures as fs
 import os
 import timestamps_patterns as tsp
+
 def main(stdscr):
 
     curses.curs_set(0)
@@ -13,14 +14,26 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
     curses.init_pair(4,curses.COLOR_BLACK, curses.COLOR_YELLOW)
+
+#------------------------------PATH MANAGEMENT---------------------------
+
+    current_dir = os.getcwd()
+    relativ_path = "\\testFolder"
+    folderpath = current_dir + relativ_path
+    fancy_relativ_path = ".\\" + relativ_path + "\\"
     
-    list_of_files = file_list.get_file_list(os.getcwd())
+    elements = file_list.get_file_list(folderpath)
+    list_of_files = elements["files"]
+    list_of_dir = elements["dirs"]
     current_option = 0
     stdscr.clear()
 
-    files_win = curses.newwin(15,30,4,0)
-    info_win = curses.newwin(20,50,4,40)
-    navbar_win = curses.newwin(3,60,0,0)
+#------------------------------WINDOWS CREATION--------------------------
+
+    navbar_win = curses.newwin(3,80,0,0)
+    dirs_win = curses.newwin(25,30,4,0)
+    files_win = curses.newwin(25,30,4,30)
+    info_win = curses.newwin(20,50,4,70)
 
     while True:
         stdscr.refresh()
@@ -28,12 +41,16 @@ def main(stdscr):
         navbar_win.clear()
 #------------------------------NAV BAR-----------------------------------
 
-        navbar_win.addstr(0,0,""" ____________________________
-|      MY LITTLE CTF TOOL    |
- ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾""",curses.color_pair(2)+curses.A_BOLD)
+        navbar_win.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
+        navbar_win.addstr(1,0,"Working in : "+os.getcwd(),curses.color_pair(2))
+        navbar_win.addstr(2,0,"Working on : "+list_of_files[current_option],curses.color_pair(2))
         navbar_win.refresh()
 
-#------------------------------FILES LIST-----------------------------------
+#------------------------------DIRS NAVIGATION---------------------------
+
+
+
+#------------------------------FILES LIST--------------------------------
 
         for i, file in enumerate(list_of_files):
             if i == current_option:
@@ -43,18 +60,18 @@ def main(stdscr):
         files_win.addstr(0,0,"---Files list---",curses.color_pair(3))
         files_win.refresh()
 
-#------------------------------FILES INFORMATION-----------------------------------
+#------------------------------FILES INFORMATION-------------------------
 
         info_win.clear()
-        file_sigs_info = fs.get_information(list_of_files[current_option])
-        file_timestamps_info = tsp.get_timestamps_patterns_info(list_of_files[current_option])
+        file_sigs_info = fs.get_information(fancy_relativ_path + list_of_files[current_option])
+        file_timestamps_info = tsp.get_timestamps_patterns_info(fancy_relativ_path + list_of_files[current_option])
         info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
         info_win.addstr(2, 0, file_timestamps_info)
         info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
         info_win.addstr(10, 0, file_sigs_info)
         info_win.refresh()
 
-#------------------------------KEY GETTING-----------------------------------
+#------------------------------KEY GETTING-------------------------------
 
         stdscr.refresh()
         key = stdscr.getch()
@@ -65,6 +82,7 @@ def main(stdscr):
         elif key == curses.KEY_RIGHT:
             print("right key")
         elif key == 27:
+            print(os.getcwd()+"\\testFolder")
             break
 
 if __name__ == "__main__":
