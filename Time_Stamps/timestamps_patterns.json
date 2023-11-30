@@ -2,67 +2,71 @@
     "time stamps patterns":
     [
         {
-        "pattern": "A=C=M",
+        "pattern": "A > C > M",
+        "description": "New Entryyyyy"
+        },
+        {
+        "pattern": "A = C = M",
         "description": "File accessed without modification"
         },
         {
-        "pattern": "A>C=M",
+        "pattern": "A > C = M",
         "description": "File accessed after creation but not modified"
         },
         {
-        "pattern": "C>M=A",
+        "pattern": "C > M = A",
         "description": "File modified after creation but not accessed"
         },
         {
-        "pattern": "A=C<M",
+        "pattern": "A = C < M",
         "description": "File accessed without modification after creation"
         },
         {
-        "pattern": "C<M=A",
+        "pattern": "C < M = A",
         "description": "File accessed without modification after creation"
         },
         {
-        "pattern": "C<M>A",
+        "pattern": "C < M > A",
         "description": "File modified after creation and accessed"
         },
         {
-        "pattern": "A=C=M",
+        "pattern": "A = C = M",
         "description": "File deleted"
         },
         {
-        "pattern": "A=C>M",
+        "pattern": "A = C > M",
         "description": "File restored"
         },
         {
-        "pattern": "A=C>M",
+        "pattern": "A = C > M",
         "description": "File copied to drive"
         },
         {
-        "pattern": "A>C<M",
+        "pattern": "A > C < M",
         "description": "File modified and accessed"
         },
         {
-        "pattern": "C<A<M",
+        "pattern": "C < A < M",
         "description": "File accessed and modified multiple times"
         },
         {
-        "pattern": "A>C<M",
+        "pattern": "A > C < M",
         "description": "File accessed after modification"
         },
         {
-        "pattern": "A=C<M",
+        "pattern": "A = C < M",
         "description": "File created and never accessed or modified"
         },
         {
-        "pattern": "A=C<M",
+        "pattern": "A = C < M",
         "description": "File accessed before modification"
         },
         {
-        "pattern": "C=A<M",
+        "pattern": "C = A < M",
         "description": "File created and immediately accessed"
         },
         {
-        "pattern": "C=A<M",
+        "pattern": "C = A < M",
         "description": "File created and modified immediately"
         }
     ]

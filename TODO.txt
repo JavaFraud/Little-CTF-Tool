@@ -7,3 +7,5 @@ guide, how to navigate the app
 
 add tool for meta datas. date modified etc
 get the patterns
+
+refactor the file sigs file so don't have to call so many functions in the console UI file
