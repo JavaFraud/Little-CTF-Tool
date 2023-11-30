@@ -1,5 +1,7 @@
-files pages when too much. How much is too much ? 
-Order files by alphabetical order ?
+finish management of dirs list and navigation
+
+files pages when too much. How much is too much
+Order files by alphabetical order
 
 guide, how to navigate the app
 

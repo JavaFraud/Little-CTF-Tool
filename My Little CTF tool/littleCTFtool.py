@@ -24,8 +24,10 @@ def main(stdscr):
     
     elements = file_list.get_file_list(folderpath)
     list_of_files = elements["files"]
-    list_of_dir = elements["dirs"]
-    current_option = 0
+    list_of_dirs = elements["dirs"]
+    current_file_option = 0
+    current_dir_option = 0
+    dir0file1 = 0
     stdscr.clear()
 
 #------------------------------WINDOWS CREATION--------------------------
@@ -43,17 +45,23 @@ def main(stdscr):
 
         navbar_win.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
         navbar_win.addstr(1,0,"Working in : "+os.getcwd(),curses.color_pair(2))
-        navbar_win.addstr(2,0,"Working on : "+list_of_files[current_option],curses.color_pair(2))
+        navbar_win.addstr(2,0,"Working on : "+list_of_files[current_file_option],curses.color_pair(2))
         navbar_win.refresh()
 
-#------------------------------DIRS NAVIGATION---------------------------
+#------------------------------DIRS List---------------------------
 
-
+        for i, directory in enumerate(list_of_dirs):
+            if i == current_file_option:
+                dirs_win.addstr(i+2,0,directory, curses.color_pair(4))
+            else:
+                dirs_win.addstr(i+2,0,directory,curses.color_pair(1))
+        dirs_win.addstr(0,0,"---Dirs list---",curses.color_pair(3))
+        dirs_win.refresh()
 
 #------------------------------FILES LIST--------------------------------
 
         for i, file in enumerate(list_of_files):
-            if i == current_option:
+            if i == current_file_option:
                 files_win.addstr(i+2,0,file, curses.color_pair(4))
             else:
                 files_win.addstr(i+2,0,file,curses.color_pair(1))
@@ -63,8 +71,8 @@ def main(stdscr):
 #------------------------------FILES INFORMATION-------------------------
 
         info_win.clear()
-        file_sigs_info = fs.get_information(fancy_relativ_path + list_of_files[current_option])
-        file_timestamps_info = tsp.get_timestamps_patterns_info(fancy_relativ_path + list_of_files[current_option])
+        file_sigs_info = fs.get_information(fancy_relativ_path + list_of_files[current_file_option])
+        file_timestamps_info = tsp.get_timestamps_patterns_info(fancy_relativ_path + list_of_files[current_file_option])
         info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
         info_win.addstr(2, 0, file_timestamps_info)
         info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
@@ -75,10 +83,10 @@ def main(stdscr):
 
         stdscr.refresh()
         key = stdscr.getch()
-        if key == curses.KEY_UP and current_option > 0:
-            current_option -= 1
-        elif key == curses.KEY_DOWN and current_option < len(list_of_files) - 1:
-            current_option += 1
+        if key == curses.KEY_UP and current_file_option > 0:
+            current_file_option -= 1
+        elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
+            current_file_option += 1
         elif key == curses.KEY_RIGHT:
             print("right key")
         elif key == 27:
