@@ -23,11 +23,15 @@ def main(stdscr):
     fancy_relativ_path = ".\\" + relativ_path + "\\"
     
     elements = file_list.get_file_list(folderpath)
+
     list_of_files = elements["files"]
+
     list_of_dirs = elements["dirs"]
+    list_of_dirs.insert(0,"..")
+
     current_file_option = 0
     current_dir_option = 0
-    dir0file1 = 0
+    dir0file1 = 1
     stdscr.clear()
 
 #------------------------------WINDOWS CREATION--------------------------
@@ -51,7 +55,7 @@ def main(stdscr):
 #------------------------------DIRS List---------------------------
 
         for i, directory in enumerate(list_of_dirs):
-            if i == current_file_option:
+            if i == current_dir_option and dir0file1 == 0 :
                 dirs_win.addstr(i+2,0,directory, curses.color_pair(4))
             else:
                 dirs_win.addstr(i+2,0,directory,curses.color_pair(1))
@@ -61,7 +65,7 @@ def main(stdscr):
 #------------------------------FILES LIST--------------------------------
 
         for i, file in enumerate(list_of_files):
-            if i == current_file_option:
+            if i == current_file_option and dir0file1 == 1 :
                 files_win.addstr(i+2,0,file, curses.color_pair(4))
             else:
                 files_win.addstr(i+2,0,file,curses.color_pair(1))
@@ -83,15 +87,37 @@ def main(stdscr):
 
         stdscr.refresh()
         key = stdscr.getch()
-        if key == curses.KEY_UP and current_file_option > 0:
-            current_file_option -= 1
-        elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
-            current_file_option += 1
-        elif key == curses.KEY_RIGHT:
-            print("right key")
-        elif key == 27:
-            print(os.getcwd()+"\\testFolder")
+
+        if(dir0file1 == 0):
+
+            if key == curses.KEY_UP and current_dir_option > 0:
+                current_dir_option -= 1
+            elif key == curses.KEY_DOWN and current_dir_option < len(list_of_files) - 1:
+                current_dir_option += 1
+            elif key == curses.KEY_RIGHT:
+                dir0file1 = 1
+                current_file_option = 0
+            elif key == ord('a'):
+                
+                break
+            elif key == 27 or key == ord('a'):
+                print("lol")
+                break
+
+        elif(dir0file1 == 1):
+
+            if key == curses.KEY_UP and current_file_option > 0:
+                current_file_option -= 1
+            elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
+                current_file_option += 1
+            elif key == curses.KEY_LEFT:
+                dir0file1 = 0
+                current_dir_option = 0
+        
+        if key == 27:
             break
+
+        
 
 if __name__ == "__main__":
     curses.wrapper(main)
