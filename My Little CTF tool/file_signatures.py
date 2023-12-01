@@ -1,6 +1,5 @@
 import binascii
 import json
-import os
 
 def get_file_sigs_from_json(path: str):
     with open(path) as file:
@@ -38,8 +37,8 @@ def get_file_header_info(file_hex, file_sigs: dict):
     else: 
         return result
 
-def get_information(file_path):
-    file_sigs_json_path = 'file_sigs.json'
+def get_information(file_path,file_sigs_path):
+    file_sigs_json_path = file_sigs_path
     file_to_analyse_hex = read_file_hex(file_path)
     file_sigs = get_file_sigs_from_json(file_sigs_json_path)
     result = get_file_header_info(file_to_analyse_hex, file_sigs)

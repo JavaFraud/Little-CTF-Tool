@@ -40,8 +40,8 @@ def get_associated_patterns(all_patterns: dict, file_metadatas: dict):
             patterns_informations["description"] = pattern["description"]
     return patterns_informations
 
-def get_timestamps_patterns_info(file_path):
-    all_patterns = get_timestamps_from_json("timestamps_patterns.json")
+def get_timestamps_patterns_info(file_path,timestamps_path):
+    all_patterns = get_timestamps_from_json(timestamps_path)
     file_metadatas = get_file_metadata(file_path)
     infos = get_associated_patterns(all_patterns,file_metadatas)
     result ="""Modification: {}
