@@ -59,7 +59,7 @@ def main(stdscr):
         navbar_win.addstr(2,0,"Working on : "+list_of_files[current_file_option],curses.color_pair(2))
         navbar_win.refresh()
 
-#------------------------------DIRS List---------------------------
+#------------------------------DIRS LIST---------------------------------
 
         for i, directory in enumerate(list_of_dirs):
             if i == current_dir_option and dir0file1 == 0 :
@@ -99,26 +99,28 @@ def main(stdscr):
 
             if key == curses.KEY_UP and current_dir_option > 0:
                 current_dir_option -= 1
-            elif key == curses.KEY_DOWN and current_dir_option < len(list_of_files) - 1:
+            elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
                 current_dir_option += 1
             elif key == curses.KEY_RIGHT:
                 dir0file1 = 1
                 current_file_option = 0
+
             elif key == ord('a'):
+                dirs_win.clear()
                 if current_dir_option == 0:
-
-                    current_file_option = 0
-                    current_dir_option = 0
-                    dir0file1 = 1
-
-                    os.chdir(os.getcwd()+"\\..")
+                    try:
+                        os.chdir(os.getcwd()+"\\..")
+                    except:
+                        print("err")
+                else:
+                    os.chdir(os.getcwd() + "\\" + list_of_dirs[current_dir_option])
                     current_dir = os.getcwd()
-
-                    list_of_files, list_of_dirs = update_lists(current_dir)
-            
-            
+                list_of_files, list_of_dirs = update_lists(current_dir)
+                current_file_option = 0
+                current_dir_option = 0
+                dir0file1 = 0
+                
             elif key == 27:
-                print("lol")
                 break
 
         elif(dir0file1 == 1):
