@@ -1,8 +1,9 @@
-finish management of dirs list and navigation
+make pads get up when going down
+putt a sign when dirs are left scrolling down
+same for files
 
-files pages when too much. How much is too much
-Order files by alphabetical order
+guide, how to navigate the app, and more ?
 
-guide, how to navigate the app
+new pages ? a for access, h for help
 
-steg for next !!
+steg for next, LSB
