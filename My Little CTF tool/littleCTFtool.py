@@ -49,13 +49,15 @@ def main(stdscr):
     files_pad= curses.newpad(100,60)
     dirs_pad= curses.newpad(100,30)
 
+    y_dir_list_index = 0
+
     while True:
         stdscr.refresh()
         navbar_win.clear()
 
         files_pad.clear()
         dirs_pad.clear()
-        
+
 #------------------------------NAV BAR-----------------------------------
 
         navbar_win.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
@@ -71,7 +73,7 @@ def main(stdscr):
             else:
                 dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
         dirs_pad.addstr(0,0,"---Dirs list---",curses.color_pair(3))
-        dirs_pad.refresh(0,0,4,0,25,30)
+        dirs_pad.refresh(y_dir_list_index,0,4,0,10,30)
 
 #------------------------------FILES LIST--------------------------------
 
@@ -105,6 +107,7 @@ def main(stdscr):
                 current_dir_option -= 1
             elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
                 current_dir_option += 1
+                
             elif key == curses.KEY_RIGHT:
                 dir0file1 = 1
                 current_file_option = 0
