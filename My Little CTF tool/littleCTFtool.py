@@ -44,14 +44,15 @@ def main(stdscr):
 #------------------------------WINDOWS CREATION--------------------------
 
     navbar_win = curses.newwin(3,80,0,0)
-    dirs_win = curses.newwin(25,30,4,0)
     files_win = curses.newwin(25,30,4,30)
     info_win = curses.newwin(20,50,4,70)
+    dirs_pad= curses.newpad(100,30)
 
     while True:
         stdscr.refresh()
         files_win.clear()
         navbar_win.clear()
+        dirs_pad.clear()
 #------------------------------NAV BAR-----------------------------------
 
         navbar_win.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
@@ -63,11 +64,11 @@ def main(stdscr):
 
         for i, directory in enumerate(list_of_dirs):
             if i == current_dir_option and dir0file1 == 0 :
-                dirs_win.addstr(i+2,0,directory, curses.color_pair(4))
+                dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
             else:
-                dirs_win.addstr(i+2,0,directory,curses.color_pair(1))
-        dirs_win.addstr(0,0,"---Dirs list---",curses.color_pair(3))
-        dirs_win.refresh()
+                dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
+        dirs_pad.addstr(0,0,"---Dirs list---",curses.color_pair(3))
+        dirs_pad.refresh(0,0,4,0,25,30)
 
 #------------------------------FILES LIST--------------------------------
 
@@ -78,6 +79,7 @@ def main(stdscr):
                 files_win.addstr(i+2,0,file,curses.color_pair(1))
         files_win.addstr(0,0,"---Files list---",curses.color_pair(3))
         files_win.refresh()
+
 
 #------------------------------FILES INFORMATION-------------------------
 
@@ -106,7 +108,6 @@ def main(stdscr):
                 current_file_option = 0
 
             elif key == ord('a'):
-                dirs_win.clear()
                 if current_dir_option == 0:
                     try:
                         os.chdir(os.getcwd()+"\\..")
