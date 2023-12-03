@@ -24,6 +24,7 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
     curses.init_pair(4,curses.COLOR_BLACK, curses.COLOR_YELLOW)
+    curses.init_pair(5,curses.COLOR_BLACK, curses.COLOR_CYAN)
 
 #------------------------------PATH MANAGEMENT---------------------------
 
@@ -68,15 +69,24 @@ def main(stdscr):
 #------------------------------DIRS LIST---------------------------------
 
         for i, directory in enumerate(list_of_dirs):
+            #Selection
             if i == current_dir_option and dir0file1 == 0 :
                 dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
             else:
                 dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
-        dirs_pad.addstr(y_dir_list_index,0,"---Dirs list---",curses.color_pair(3))
+        #Top Border
+        dirs_pad.addstr(y_dir_list_index,0,"----Dirs list----",curses.color_pair(3))
+        dirs_pad.addstr(y_dir_list_index,17,"             ",curses.color_pair(1))
+
+        #Srolling informations
+        if y_dir_list_index != 0:
+            dirs_pad.addstr(y_dir_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
+            dirs_pad.addstr(y_dir_list_index+1,17,"             ",curses.color_pair(1))
         if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs)>=13:
-            dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(3))
+            dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
         else:
             dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
+
         dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
 
 #------------------------------FILES LIST--------------------------------
