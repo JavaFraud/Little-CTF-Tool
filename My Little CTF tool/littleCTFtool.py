@@ -73,7 +73,11 @@ def main(stdscr):
             else:
                 dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
         dirs_pad.addstr(y_dir_list_index,0,"---Dirs list---",curses.color_pair(3))
-        dirs_pad.refresh(y_dir_list_index,0,4,0,17,30)
+        if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs)>=13:
+            dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(3))
+        else:
+            dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
+        dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
 
 #------------------------------FILES LIST--------------------------------
 
@@ -104,9 +108,14 @@ def main(stdscr):
         if(dir0file1 == 0):
 
             if key == curses.KEY_UP and current_dir_option > 0:
+                #Scrolling list management
+                if current_dir_option == y_dir_list_index:
+                    y_dir_list_index += -1
                 current_dir_option -= 1
-                
+
             elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
+                if current_dir_option - 1 == y_dir_list_index + 12:
+                    y_dir_list_index += 1
                 current_dir_option += 1
                 
             elif key == curses.KEY_RIGHT:
@@ -126,6 +135,7 @@ def main(stdscr):
                 current_file_option = 0
                 current_dir_option = 0
                 dir0file1 = 0
+                y_dir_list_index = 0
                 
             elif key == 27:
                 break
