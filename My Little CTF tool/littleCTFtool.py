@@ -72,8 +72,8 @@ def main(stdscr):
                 dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
             else:
                 dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
-        dirs_pad.addstr(0,0,"---Dirs list---",curses.color_pair(3))
-        dirs_pad.refresh(y_dir_list_index,0,4,0,10,30)
+        dirs_pad.addstr(y_dir_list_index,0,"---Dirs list---",curses.color_pair(3))
+        dirs_pad.refresh(y_dir_list_index,0,4,0,17,30)
 
 #------------------------------FILES LIST--------------------------------
 
@@ -83,7 +83,7 @@ def main(stdscr):
             else:
                 files_pad.addstr(i+2,0,file,curses.color_pair(1))
         files_pad.addstr(0,0,"---Files list---",curses.color_pair(3))
-        files_pad.refresh(0,0,4,30,25,60)
+        files_pad.refresh(0,0,4,30,17,60)
 
 #------------------------------FILES INFORMATION-------------------------
 
@@ -105,6 +105,7 @@ def main(stdscr):
 
             if key == curses.KEY_UP and current_dir_option > 0:
                 current_dir_option -= 1
+                
             elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
                 current_dir_option += 1
                 
