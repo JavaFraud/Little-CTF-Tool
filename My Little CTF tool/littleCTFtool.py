@@ -82,11 +82,11 @@ def main(stdscr):
         if y_dir_list_index != 0:
             dirs_pad.addstr(y_dir_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
             dirs_pad.addstr(y_dir_list_index+1,17,"             ",curses.color_pair(1))
-        if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs)>=13:
+        if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs) >= 13 and y_dir_list_index != len(list_of_dirs)-14:
+            #not working as intended when some lists are at the limit.. Gotta fix that
             dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
         else:
             dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
-
         dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
 
 #------------------------------FILES LIST--------------------------------
@@ -159,6 +159,7 @@ def main(stdscr):
             elif key == curses.KEY_LEFT:
                 dir0file1 = 0
                 current_dir_option = 0
+                y_dir_list_index = 0
         
         if key == 27:
             break
