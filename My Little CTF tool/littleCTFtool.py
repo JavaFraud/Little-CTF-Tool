@@ -51,6 +51,7 @@ def main(stdscr):
     dirs_pad= curses.newpad(100,30)
 
     y_dir_list_index = 0
+    y_file_list_index = 0
 
     while True:
         stdscr.refresh()
@@ -87,6 +88,7 @@ def main(stdscr):
             dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
         else:
             dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
+
         dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
 
 #------------------------------FILES LIST--------------------------------
@@ -96,7 +98,21 @@ def main(stdscr):
                 files_pad.addstr(i+2,0,file, curses.color_pair(4))
             else:
                 files_pad.addstr(i+2,0,file,curses.color_pair(1))
+
+        #Top border
         files_pad.addstr(0,0,"---Files list---",curses.color_pair(3))
+        files_pad.addstr(y_file_list_index,17,"             ",curses.color_pair(1))
+
+        #Srolling informations
+        if y_file_list_index != 0:
+            files_pad.addstr(y_file_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
+            files_pad.addstr(y_file_list_index+1,17,"             ",curses.color_pair(1))
+        if current_dir_option != len(list_of_files)-1 and len(list_of_files) >= 13 and y_file_list_index != len(list_of_files)-14:
+            #not working as intended when some lists are at the limit.. Gotta fix that
+            files_pad.addstr(y_file_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
+        else:
+            files_pad.addstr(y_file_list_index+16,0,"=================",curses.color_pair(3))
+
         files_pad.refresh(0,0,4,30,17,60)
 
 #------------------------------FILES INFORMATION-------------------------
