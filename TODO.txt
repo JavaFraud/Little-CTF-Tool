@@ -1,6 +1,4 @@
-make pads get up when going down
-putt a sign when dirs are left scrolling down
-same for files
+bg fix for wrong list indexes when accesses, also gotta deal with the access denied error
 
 guide, how to navigate the app, and more ?
 
