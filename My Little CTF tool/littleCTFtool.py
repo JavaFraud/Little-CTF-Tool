@@ -24,6 +24,7 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
     curses.init_pair(4,curses.COLOR_BLACK, curses.COLOR_YELLOW)
+    curses.init_pair(5,curses.COLOR_BLACK, curses.COLOR_CYAN)
 
 #------------------------------PATH MANAGEMENT---------------------------
 
@@ -50,6 +51,7 @@ def main(stdscr):
     dirs_pad= curses.newpad(100,30)
 
     y_dir_list_index = 0
+    y_file_list_index = 0
 
     while True:
         stdscr.refresh()
@@ -68,12 +70,27 @@ def main(stdscr):
 #------------------------------DIRS LIST---------------------------------
 
         for i, directory in enumerate(list_of_dirs):
+            #Selection
             if i == current_dir_option and dir0file1 == 0 :
                 dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
             else:
                 dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
-        dirs_pad.addstr(y_dir_list_index,0,"---Dirs list---",curses.color_pair(3))
-        dirs_pad.refresh(y_dir_list_index,0,4,0,17,30)
+        #Top Border
+        dirs_pad.addstr(y_dir_list_index,0,"----Dirs list----",curses.color_pair(3))
+        dirs_pad.addstr(y_dir_list_index,17,"             ",curses.color_pair(1))
+
+        #Srolling informations
+        if y_dir_list_index != 0:
+            dirs_pad.addstr(y_dir_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
+            dirs_pad.addstr(y_dir_list_index+1,17,"             ",curses.color_pair(1))
+        if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs) >= 13 and y_dir_list_index != len(list_of_dirs)-14:
+            #not working as intended when some lists are at the limit.. Gotta fix that
+            dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
+        else:
+            dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
+        dirs_pad.addstr(y_dir_list_index+16,17,"             ",curses.color_pair(1))
+
+        dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
 
 #------------------------------FILES LIST--------------------------------
 
@@ -82,8 +99,22 @@ def main(stdscr):
                 files_pad.addstr(i+2,0,file, curses.color_pair(4))
             else:
                 files_pad.addstr(i+2,0,file,curses.color_pair(1))
-        files_pad.addstr(0,0,"---Files list---",curses.color_pair(3))
-        files_pad.refresh(0,0,4,30,17,60)
+
+        #Top border
+        files_pad.addstr(y_file_list_index,0,"----Files list----",curses.color_pair(3))
+        files_pad.addstr(y_file_list_index,17,"            ",curses.color_pair(1))
+
+        #Srolling informations
+        if y_file_list_index != 0:
+            files_pad.addstr(y_file_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
+            files_pad.addstr(y_file_list_index+1,17,"             ",curses.color_pair(1))
+        if current_file_option != len(list_of_files)-1 and len(list_of_files) >= 13 and y_file_list_index != len(list_of_files)-14:
+            files_pad.addstr(y_file_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
+        else:
+            files_pad.addstr(y_file_list_index+16,0,"=================",curses.color_pair(3))
+        files_pad.addstr(y_file_list_index+16,17,"                       ",curses.color_pair(1))
+
+        files_pad.refresh(y_file_list_index,0,4,30,20,60)
 
 #------------------------------FILES INFORMATION-------------------------
 
@@ -104,9 +135,14 @@ def main(stdscr):
         if(dir0file1 == 0):
 
             if key == curses.KEY_UP and current_dir_option > 0:
+                #Scrolling list management
+                if current_dir_option == y_dir_list_index:
+                    y_dir_list_index += -1
                 current_dir_option -= 1
-                
+
             elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
+                if current_dir_option - 1 == y_dir_list_index + 12:
+                    y_dir_list_index += 1
                 current_dir_option += 1
                 
             elif key == curses.KEY_RIGHT:
@@ -121,11 +157,12 @@ def main(stdscr):
                         print("err")
                 else:
                     os.chdir(os.getcwd() + "\\" + list_of_dirs[current_dir_option])
-                    current_dir = os.getcwd()
+                current_dir = os.getcwd()
                 list_of_files, list_of_dirs = update_lists(current_dir)
                 current_file_option = 0
                 current_dir_option = 0
                 dir0file1 = 0
+                y_dir_list_index = 0
                 
             elif key == 27:
                 break
@@ -133,12 +170,17 @@ def main(stdscr):
         elif(dir0file1 == 1):
 
             if key == curses.KEY_UP and current_file_option > 0:
+                if current_file_option == y_file_list_index:
+                    y_file_list_index += -1
                 current_file_option -= 1
             elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
+                if current_file_option -1 == y_file_list_index + 12:
+                    y_file_list_index += 1
                 current_file_option += 1
             elif key == curses.KEY_LEFT:
                 dir0file1 = 0
                 current_dir_option = 0
+                y_dir_list_index = 0
         
         if key == 27:
             break
