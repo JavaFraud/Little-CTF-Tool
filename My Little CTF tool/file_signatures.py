@@ -1,4 +1,4 @@
-import binascii
+import filebinary as fb
 import json
 
 def get_file_sigs_from_json(path: str):
@@ -21,12 +21,6 @@ Trailer (hex): {}""".format(
     some_file_sig["Header offset"],
     some_file_sig["Trailer (hex)"])
 
-def read_file_hex(file_path):
-    with open(file_path, 'rb') as file:
-        binary_data = file.read()
-        hex_data = binascii.hexlify(binary_data).decode('utf-8')
-        return hex_data
-
 def get_file_header_info(file_hex, file_sigs: dict):
     result = 0
     for file_sig in file_sigs:
@@ -39,7 +33,7 @@ def get_file_header_info(file_hex, file_sigs: dict):
 
 def get_information(file_path,file_sigs_path):
     file_sigs_json_path = file_sigs_path
-    file_to_analyse_hex = read_file_hex(file_path)
+    file_to_analyse_hex = fb.read_file_hex(file_path)
     file_sigs = get_file_sigs_from_json(file_sigs_json_path)
     result = get_file_header_info(file_to_analyse_hex, file_sigs)
     return result
