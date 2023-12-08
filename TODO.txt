@@ -1,13 +1,10 @@
 bg fix for wrong list indexes when accesses, also gotta deal with the access denied error
 
-guide, how to navigate the app, and more.
-
-a for access
-h for help
 new window ?
 Redimension the terminal ?
 Behavior on linux cli
 
+add some alert window for denied access and stuff
 
 new pages ? a for access, h for help
 

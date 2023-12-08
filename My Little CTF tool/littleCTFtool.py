@@ -25,6 +25,7 @@ def main(stdscr):
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
     curses.init_pair(4,curses.COLOR_BLACK, curses.COLOR_YELLOW)
     curses.init_pair(5,curses.COLOR_BLACK, curses.COLOR_CYAN)
+    curses.init_pair(6,curses.COLOR_BLUE, curses.COLOR_BLACK)
 
 #------------------------------PATH MANAGEMENT---------------------------
 
@@ -44,7 +45,7 @@ def main(stdscr):
 
 #------------------------------WINDOWS CREATION--------------------------
 
-    navbar_win = curses.newwin(3,80,0,0)
+    navbar_win = curses.newwin(4,120,0,0)
     info_win = curses.newwin(20,50,4,70)
 
     files_pad= curses.newpad(100,60)
@@ -65,6 +66,8 @@ def main(stdscr):
         navbar_win.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
         navbar_win.addstr(1,0,"Working in : "+os.getcwd(),curses.color_pair(2))
         navbar_win.addstr(2,0,"Working on : "+list_of_files[current_file_option],curses.color_pair(2))
+        navbar_win.addstr(3,0,"↔↕: navigate / a: access dir / h: display help /f: access file-signature tool / s: access steganography tool",curses.color_pair(6))
+        #
         navbar_win.refresh()
 
 #------------------------------DIRS LIST---------------------------------
@@ -184,8 +187,6 @@ def main(stdscr):
         
         if key == 27:
             break
-
-        
 
 if __name__ == "__main__":
     curses.wrapper(main)
