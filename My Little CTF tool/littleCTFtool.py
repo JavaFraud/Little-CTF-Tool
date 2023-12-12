@@ -48,12 +48,31 @@ def list_displayer(curses,some_pad,some_list,some_y_list_index,dir0file1,dirOrfi
         some_pad.addstr(some_y_list_index+16,0,"=================",curses.color_pair(3))
     some_pad.addstr(some_y_list_index+16,17,"                       ",curses.color_pair(1))
 
+def informations_displayer(curses,info_win,file_sigs_info,file_timestamps_info):
+    info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
+    info_win.addstr(2, 0, file_timestamps_info)
+    info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
+    info_win.addstr(10, 0, file_sigs_info)
+
 def update_lists(current_dir):
     elements = file_list.get_file_list(current_dir)
     list_of_files = elements["files"]
     list_of_dirs = elements["dirs"]
     list_of_dirs.insert(0,"..")
     return list_of_files, list_of_dirs
+
+def up_down(key,curses,current_x_option,y_x_list_index,list_lenght):
+    print("inside")
+    if key == curses.KEY_UP and current_x_option > 0:
+        #Scrolling list management
+        if current_x_option == y_x_list_index:
+            y_x_list_index += -1
+        current_x_option -= 1
+
+    elif key == curses.KEY_DOWN and current_x_option < list_lenght - 1:
+        if current_x_option - 1 == y_x_list_index + 12:
+            y_x_list_index += 1
+        current_x_option += 1
 
 def main(stdscr):
 
@@ -82,35 +101,38 @@ def main(stdscr):
 
     while True:
 
+        #clear
         stdscr.refresh()
         navbar_win.clear()        
         files_pad.clear()
         dirs_pad.clear()
+        info_win.clear()
+
         #nav
         navbar_display(navbar_win,list_of_files[current_file_option],os.getcwd())
         navbar_win.refresh()
+
         #dirs
         list_displayer(curses,dirs_pad,list_of_dirs,y_dir_list_index,dir0file1,0,current_dir_option,"Dirs")
         dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
+
         #files
         list_displayer(curses,files_pad,list_of_files,y_file_list_index,dir0file1,1,current_file_option,"Files")
         files_pad.refresh(y_file_list_index,0,4,30,20,60)
-
-#------------------------------FILES INFORMATION-------------------------
-
-        info_win.clear()
-        file_sigs_info = fs.get_information(current_dir + "/" + list_of_files[current_file_option], filesigs_path)
-        file_timestamps_info = tsp.get_timestamps_patterns_info(current_dir + "/" + list_of_files[current_file_option],timestamps_path)
-        info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
-        info_win.addstr(2, 0, file_timestamps_info)
-        info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
-        info_win.addstr(10, 0, file_sigs_info)
+        
+        #informations
+        file_sigs_info = fs.get_information(current_dir + path_type + list_of_files[current_file_option], filesigs_path)
+        file_timestamps_info = tsp.get_timestamps_patterns_info(current_dir + path_type + list_of_files[current_file_option],timestamps_path)
+        informations_displayer(curses,info_win,file_sigs_info,file_timestamps_info)
         info_win.refresh()
 
 #------------------------------KEY GETTING-------------------------------
 
         stdscr.refresh()
         key = stdscr.getch()
+
+        
+
 
         if(dir0file1 == 0):
 
@@ -124,8 +146,8 @@ def main(stdscr):
                 if current_dir_option - 1 == y_dir_list_index + 12:
                     y_dir_list_index += 1
                 current_dir_option += 1
-                
-            elif key == curses.KEY_RIGHT:
+            #up_down(key,curses,current_dir_option,y_dir_list_index,len(list_of_dirs))
+            if key == curses.KEY_RIGHT:
                 dir0file1 = 1
                 current_file_option = 0
 
