@@ -1,15 +1,12 @@
-bg fix for wrong list indexes when accesses, also gotta deal with the access denied error
+maybe should combine the dir list and the file list in the same functin passing different parameters
 
+
+
+bg fix for wrong list indexes when accesses, also gotta deal with the access denied error
 new window ?
 Redimension the terminal ?
-Behavior on linux cli
-
 add some alert window for denied access and stuff
 
 new pages ? a for access, h for help
 
 steg for next, LSB
-
-first commit from Fedora
-
-commit test for github desktop
