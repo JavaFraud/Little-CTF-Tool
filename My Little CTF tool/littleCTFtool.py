@@ -3,6 +3,14 @@ import file_list
 import file_signatures as fs
 import os
 import timestamps_patterns as tsp
+import platform
+
+def path_type_configuration():
+    if platform.system() == "Linux":
+        configuration = "/"
+    if platform.system() == "Windows":
+        configuration = "\\"
+    return configuration
 
 def update_lists(current_dir):
     elements = file_list.get_file_list(current_dir)
@@ -11,15 +19,7 @@ def update_lists(current_dir):
     list_of_dirs.insert(0,"..")
     return list_of_files, list_of_dirs
 
-
-def main(stdscr):
-
-    filesigs_path = os.path.dirname(os.path.abspath(__file__))+"/file_sigs.json"
-    timestamps_path = os.path.dirname(os.path.abspath(__file__))+"/timestamps_patterns.json"
-    curses.curs_set(0)
-    stdscr.clear()
-    stdscr.refresh()
-
+def init_color_pairs(curses):
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
@@ -27,16 +27,23 @@ def main(stdscr):
     curses.init_pair(5,curses.COLOR_BLACK, curses.COLOR_CYAN)
     curses.init_pair(6,curses.COLOR_BLUE, curses.COLOR_BLACK)
 
+def main(stdscr):
+
+#------------------------------INITIALISATION----------------------------
+
+    path_type = path_type_configuration()
+    filesigs_path = os.path.dirname(os.path.abspath(__file__))+path_type+"file_sigs.json"
+    timestamps_path = os.path.dirname(os.path.abspath(__file__))+path_type+"timestamps_patterns.json"
+    curses.curs_set(0)
+    stdscr.clear()
+    stdscr.refresh()
+    init_color_pairs(curses)
+
 #------------------------------PATH MANAGEMENT---------------------------
 
+
     current_dir = os.getcwd()
-    
-    elements = file_list.get_file_list(current_dir)
-
-    list_of_files = elements["files"]
-
-    list_of_dirs = elements["dirs"]
-    list_of_dirs.insert(0,"..")
+    list_of_files,list_of_dirs = update_lists(current_dir)
 
     current_file_option = 0
     current_dir_option = 0
@@ -155,11 +162,11 @@ def main(stdscr):
             elif key == ord('a'):
                 if current_dir_option == 0:
                     try:
-                        os.chdir(os.getcwd()+"\\..")
+                        os.chdir(os.getcwd()+path_type+"..")
                     except:
                         print("err")
                 else:
-                    os.chdir(os.getcwd() + "\\" + list_of_dirs[current_dir_option])
+                    os.chdir(os.getcwd() + path_type + list_of_dirs[current_dir_option])
                 current_dir = os.getcwd()
                 list_of_files, list_of_dirs = update_lists(current_dir)
                 current_file_option = 0
