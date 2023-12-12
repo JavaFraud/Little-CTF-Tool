@@ -27,6 +27,35 @@ def init_color_pairs(curses):
     curses.init_pair(5,curses.COLOR_BLACK, curses.COLOR_CYAN)
     curses.init_pair(6,curses.COLOR_BLUE, curses.COLOR_BLACK)
 
+def navbar_display(navbar, file, dirs):
+    navbar.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
+    navbar.addstr(1,0,"Working in : "+dirs,curses.color_pair(2))
+    navbar.addstr(2,0,"Working on : "+file,curses.color_pair(2))
+    navbar.addstr(3,0,"↔↕: navigate / a: access dir / h: display help /f: access file-signature tool / s: access steganography tool",curses.color_pair(6))
+
+def dir_list_display(curses, dirs_pad, list_of_dirs,y_dir_list_index,dir0file1,current_dir_option):
+    for i, directory in enumerate(list_of_dirs):
+        #Selection
+        if i == current_dir_option and dir0file1 == 0 :
+            dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
+        else:
+            dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
+    #Top Border
+    dirs_pad.addstr(y_dir_list_index,0,"----Dirs list----",curses.color_pair(3))
+    dirs_pad.addstr(y_dir_list_index,17,"             ",curses.color_pair(1))
+
+    #Srolling informations
+    if y_dir_list_index != 0:
+        dirs_pad.addstr(y_dir_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
+        dirs_pad.addstr(y_dir_list_index+1,17,"             ",curses.color_pair(1))
+    if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs) >= 13 and y_dir_list_index != len(list_of_dirs)-14:
+        #not working as intended when some lists are at the limit.. Gotta fix that
+        dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
+    else:
+        dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
+    dirs_pad.addstr(y_dir_list_index+16,17,"             ",curses.color_pair(1))
+    dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
+
 def main(stdscr):
 
 #------------------------------INITIALISATION----------------------------
@@ -61,47 +90,18 @@ def main(stdscr):
     y_dir_list_index = 0
     y_file_list_index = 0
 
+    #loop
     while True:
-        stdscr.refresh()
-        navbar_win.clear()
 
+        stdscr.refresh()
+        navbar_win.clear()        
         files_pad.clear()
         dirs_pad.clear()
-
-#------------------------------NAV BAR-----------------------------------
-
-        navbar_win.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
-        navbar_win.addstr(1,0,"Working in : "+os.getcwd(),curses.color_pair(2))
-        navbar_win.addstr(2,0,"Working on : "+list_of_files[current_file_option],curses.color_pair(2))
-        navbar_win.addstr(3,0,"↔↕: navigate / a: access dir / h: display help /f: access file-signature tool / s: access steganography tool",curses.color_pair(6))
-        #
+        #nav
+        navbar_display(navbar_win,list_of_files[current_file_option],os.getcwd())
         navbar_win.refresh()
-
-#------------------------------DIRS LIST---------------------------------
-
-        for i, directory in enumerate(list_of_dirs):
-            #Selection
-            if i == current_dir_option and dir0file1 == 0 :
-                dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
-            else:
-                dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
-        #Top Border
-        dirs_pad.addstr(y_dir_list_index,0,"----Dirs list----",curses.color_pair(3))
-        dirs_pad.addstr(y_dir_list_index,17,"             ",curses.color_pair(1))
-
-        #Srolling informations
-        if y_dir_list_index != 0:
-            dirs_pad.addstr(y_dir_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
-            dirs_pad.addstr(y_dir_list_index+1,17,"             ",curses.color_pair(1))
-        if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs) >= 13 and y_dir_list_index != len(list_of_dirs)-14:
-            #not working as intended when some lists are at the limit.. Gotta fix that
-            dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
-        else:
-            dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
-        dirs_pad.addstr(y_dir_list_index+16,17,"             ",curses.color_pair(1))
-
-        dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
-
+        #dirs
+        dir_list_display(curses,dirs_pad,list_of_dirs,y_dir_list_index,dir0file1,current_dir_option)
 #------------------------------FILES LIST--------------------------------
 
         for i, file in enumerate(list_of_files):
