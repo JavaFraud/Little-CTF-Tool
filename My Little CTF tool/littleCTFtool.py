@@ -131,9 +131,34 @@ def main(stdscr):
         stdscr.refresh()
         key = stdscr.getch()
 
-        
+        def scroller(y_x_list_index,current_x_option,y_adder,current_adder,up_or_down):
+            if up_or_down == "up":
+                value1 = current_x_option 
+                value2 = y_x_list_index
+            elif up_or_down == "down":
+                value1 = current_x_option - 1
+                value2 = y_x_list_index + 12
+            if value1 == value2:
+                y_x_list_index += y_adder
+            current_x_option += current_adder
+
+        if key == curses.KEY_UP and current_dir_option > 0 or current_file_option > 0:
+            if dir0file1 == 0:
+                scroller(y_dir_list_index,current_dir_option,-1,-1,"up")
+            elif dir0file1 == 1:
+                scroller(y_file_list_index,current_file_option,-1,-1,"up")
+        elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
+            if dir0file1 == 0:
+                scroller(y_dir_list_index,current_dir_option,+1,+1,"down")
+            elif dir0file1 == 1:
+                scroller(y_file_list_index,current_file_option,+1,+1,"down")
 
 
+
+
+
+#------------------------------------------------------------------------
+        '''
         if(dir0file1 == 0):
 
             if key == curses.KEY_UP and current_dir_option > 0:
@@ -175,10 +200,12 @@ def main(stdscr):
                 if current_file_option == y_file_list_index:
                     y_file_list_index += -1
                 current_file_option -= 1
+
             elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
                 if current_file_option -1 == y_file_list_index + 12:
                     y_file_list_index += 1
                 current_file_option += 1
+
             elif key == curses.KEY_LEFT:
                 dir0file1 = 0
                 current_dir_option = 0
@@ -186,6 +213,6 @@ def main(stdscr):
         
         if key == 27:
             break
-
+        '''
 if __name__ == "__main__":
     curses.wrapper(main)
