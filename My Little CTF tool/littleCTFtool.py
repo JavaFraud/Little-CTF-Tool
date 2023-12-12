@@ -14,8 +14,8 @@ def update_lists(current_dir):
 
 def main(stdscr):
 
-    filesigs_path = os.path.dirname(os.path.abspath(__file__))+"\\file_sigs.json"
-    timestamps_path = os.path.dirname(os.path.abspath(__file__))+"\\timestamps_patterns.json"
+    filesigs_path = os.path.dirname(os.path.abspath(__file__))+"/file_sigs.json"
+    timestamps_path = os.path.dirname(os.path.abspath(__file__))+"/timestamps_patterns.json"
     curses.curs_set(0)
     stdscr.clear()
     stdscr.refresh()
@@ -122,8 +122,8 @@ def main(stdscr):
 #------------------------------FILES INFORMATION-------------------------
 
         info_win.clear()
-        file_sigs_info = fs.get_information(current_dir + "\\" + list_of_files[current_file_option], filesigs_path)
-        file_timestamps_info = tsp.get_timestamps_patterns_info(current_dir + "\\" + list_of_files[current_file_option],timestamps_path)
+        file_sigs_info = fs.get_information(current_dir + "/" + list_of_files[current_file_option], filesigs_path)
+        file_timestamps_info = tsp.get_timestamps_patterns_info(current_dir + "/" + list_of_files[current_file_option],timestamps_path)
         info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
         info_win.addstr(2, 0, file_timestamps_info)
         info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
