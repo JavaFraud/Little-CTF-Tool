@@ -61,22 +61,19 @@ def update_lists(current_dir):
     list_of_dirs.insert(0,"..")
     return list_of_files, list_of_dirs
 
-def up_down(key,curses,current_x_option,y_x_list_index,list_lenght):
-    print("inside")
-    if key == curses.KEY_UP and current_x_option > 0:
-        #Scrolling list management
-        if current_x_option == y_x_list_index:
-            y_x_list_index += -1
-        current_x_option -= 1
-
-    elif key == curses.KEY_DOWN and current_x_option < list_lenght - 1:
-        if current_x_option - 1 == y_x_list_index + 12:
-            y_x_list_index += 1
-        current_x_option += 1
+def scroller(y_x_list_index,current_x_option,adder,up_or_down):
+    if up_or_down == "up":
+        value1 = current_x_option 
+        value2 = y_x_list_index
+    elif up_or_down == "down":
+        value1 = current_x_option - 1
+        value2 = y_x_list_index + 12
+    if value1 == value2:
+        y_x_list_index += adder
+    current_x_option += adder
+    return y_x_list_index,current_x_option
 
 def main(stdscr):
-
-#------------------------------INITIALISATION----------------------------
 
     path_type = path_type_configuration()
     filesigs_path = os.path.dirname(os.path.abspath(__file__))+path_type+"file_sigs.json"
@@ -126,93 +123,52 @@ def main(stdscr):
         informations_displayer(curses,info_win,file_sigs_info,file_timestamps_info)
         info_win.refresh()
 
-#------------------------------KEY GETTING-------------------------------
-
+        #keygetting
         stdscr.refresh()
         key = stdscr.getch()
 
-        def scroller(y_x_list_index,current_x_option,y_adder,current_adder,up_or_down):
-            if up_or_down == "up":
-                value1 = current_x_option 
-                value2 = y_x_list_index
-            elif up_or_down == "down":
-                value1 = current_x_option - 1
-                value2 = y_x_list_index + 12
-            if value1 == value2:
-                y_x_list_index += y_adder
-            current_x_option += current_adder
+        if key == curses.KEY_UP:
+            adder = -1
+            up_or_down = "up"
+            if dir0file1 == 0 and current_dir_option > 0:
+                y_dir_list_index,current_dir_option = scroller(y_dir_list_index,current_dir_option,adder,up_or_down)
+            elif dir0file1 == 1 and current_file_option > 0:
+                y_file_list_index,current_file_option = scroller(y_file_list_index,current_file_option,adder,up_or_down)
 
-        if key == curses.KEY_UP and current_dir_option > 0 or current_file_option > 0:
-            if dir0file1 == 0:
-                scroller(y_dir_list_index,current_dir_option,-1,-1,"up")
-            elif dir0file1 == 1:
-                scroller(y_file_list_index,current_file_option,-1,-1,"up")
-        elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
-            if dir0file1 == 0:
-                scroller(y_dir_list_index,current_dir_option,+1,+1,"down")
-            elif dir0file1 == 1:
-                scroller(y_file_list_index,current_file_option,+1,+1,"down")
+        elif key == curses.KEY_DOWN:
+            adder = 1
+            up_or_down = "down"
+            if dir0file1 == 0 and current_dir_option < len(list_of_dirs) - 1:
+                y_dir_list_index,current_dir_option = scroller(y_dir_list_index,current_dir_option,adder,up_or_down)
+            elif dir0file1 == 1 and current_file_option < len(list_of_files) - 1:
+                y_file_list_index,current_file_option = scroller(y_file_list_index,current_file_option,adder,up_or_down)
 
+        elif key == curses.KEY_LEFT:
+            dir0file1 = 0
+            current_dir_option = 0
+            y_dir_list_index = 0
 
+        if key == curses.KEY_RIGHT:
+            dir0file1 = 1
+            current_file_option = 0
 
-
-
-#------------------------------------------------------------------------
-        '''
-        if(dir0file1 == 0):
-
-            if key == curses.KEY_UP and current_dir_option > 0:
-                #Scrolling list management
-                if current_dir_option == y_dir_list_index:
-                    y_dir_list_index += -1
-                current_dir_option -= 1
-
-            elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
-                if current_dir_option - 1 == y_dir_list_index + 12:
-                    y_dir_list_index += 1
-                current_dir_option += 1
-            #up_down(key,curses,current_dir_option,y_dir_list_index,len(list_of_dirs))
-            if key == curses.KEY_RIGHT:
-                dir0file1 = 1
-                current_file_option = 0
-
-            elif key == ord('a'):
-                if current_dir_option == 0:
-                    try:
-                        os.chdir(os.getcwd()+path_type+"..")
-                    except:
-                        print("err")
-                else:
-                    os.chdir(os.getcwd() + path_type + list_of_dirs[current_dir_option])
-                current_dir = os.getcwd()
-                list_of_files, list_of_dirs = update_lists(current_dir)
-                current_file_option = 0
-                current_dir_option = 0
-                dir0file1 = 0
-                y_dir_list_index = 0
-                
-            elif key == 27:
-                break
-
-        elif(dir0file1 == 1):
-
-            if key == curses.KEY_UP and current_file_option > 0:
-                if current_file_option == y_file_list_index:
-                    y_file_list_index += -1
-                current_file_option -= 1
-
-            elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
-                if current_file_option -1 == y_file_list_index + 12:
-                    y_file_list_index += 1
-                current_file_option += 1
-
-            elif key == curses.KEY_LEFT:
-                dir0file1 = 0
-                current_dir_option = 0
-                y_dir_list_index = 0
-        
-        if key == 27:
+        elif key == ord('a'):
+            if current_dir_option == 0:
+                try:
+                    os.chdir(os.getcwd()+path_type+"..")
+                except:
+                    print("err")
+            else:
+                os.chdir(os.getcwd() + path_type + list_of_dirs[current_dir_option])
+            current_dir = os.getcwd()
+            list_of_files, list_of_dirs = update_lists(current_dir)
+            current_file_option = 0
+            current_dir_option = 0
+            dir0file1 = 0
+            y_dir_list_index = 0
+            
+        elif key == 27:
             break
-        '''
+
 if __name__ == "__main__":
     curses.wrapper(main)
