@@ -12,20 +12,13 @@ def path_type_configuration():
         configuration = "\\"
     return configuration
 
-def update_lists(current_dir):
-    elements = file_list.get_file_list(current_dir)
-    list_of_files = elements["files"]
-    list_of_dirs = elements["dirs"]
-    list_of_dirs.insert(0,"..")
-    return list_of_files, list_of_dirs
-
 def init_color_pairs(curses):
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_GREEN)
-    curses.init_pair(4,curses.COLOR_BLACK, curses.COLOR_YELLOW)
-    curses.init_pair(5,curses.COLOR_BLACK, curses.COLOR_CYAN)
-    curses.init_pair(6,curses.COLOR_BLUE, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_CYAN)
+    curses.init_pair(6, curses.COLOR_BLUE, curses.COLOR_BLACK)
 
 def navbar_display(navbar, file, dirs):
     navbar.addstr(0,0," |      MY LITTLE CTF TOOL    |",curses.color_pair(2)+curses.A_REVERSE)
@@ -33,166 +26,148 @@ def navbar_display(navbar, file, dirs):
     navbar.addstr(2,0,"Working on : "+file,curses.color_pair(2))
     navbar.addstr(3,0,"↔↕: navigate / a: access dir / h: display help /f: access file-signature tool / s: access steganography tool",curses.color_pair(6))
 
-def dir_list_display(curses, dirs_pad, list_of_dirs,y_dir_list_index,dir0file1,current_dir_option):
-    for i, directory in enumerate(list_of_dirs):
-        #Selection
-        if i == current_dir_option and dir0file1 == 0 :
-            dirs_pad.addstr(i+2,0,directory, curses.color_pair(4))
+def list_displayer(curses,some_pad,some_list,some_y_list_index,dir0file1,dirOrfile01,current_option,name):
+
+    for i, file in enumerate(some_list):
+        if i == current_option and dir0file1 == dirOrfile01:
+            some_pad.addstr(i+2,0,file, curses.color_pair(4))
         else:
-            dirs_pad.addstr(i+2,0,directory,curses.color_pair(1))
-    #Top Border
-    dirs_pad.addstr(y_dir_list_index,0,"----Dirs list----",curses.color_pair(3))
-    dirs_pad.addstr(y_dir_list_index,17,"             ",curses.color_pair(1))
+            some_pad.addstr(i+2,0,file,curses.color_pair(1))
+
+    #Top border
+    some_pad.addstr(some_y_list_index,0,"----"+name+" list----",curses.color_pair(3))
+    some_pad.addstr(some_y_list_index,17,"            ",curses.color_pair(1))
 
     #Srolling informations
-    if y_dir_list_index != 0:
-        dirs_pad.addstr(y_dir_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
-        dirs_pad.addstr(y_dir_list_index+1,17,"             ",curses.color_pair(1))
-    if current_dir_option != len(list_of_dirs)-1 and len(list_of_dirs) >= 13 and y_dir_list_index != len(list_of_dirs)-14:
-        #not working as intended when some lists are at the limit.. Gotta fix that
-        dirs_pad.addstr(y_dir_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
+    if some_y_list_index != 0:
+        some_pad.addstr(some_y_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
+        some_pad.addstr(some_y_list_index+1,17,"             ",curses.color_pair(1))
+    if current_option != len(some_list)-1 and len(some_list) >= 13 and some_y_list_index != len(some_list)-14:
+        some_pad.addstr(some_y_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
     else:
-        dirs_pad.addstr(y_dir_list_index+16,0,"=================",curses.color_pair(3))
-    dirs_pad.addstr(y_dir_list_index+16,17,"             ",curses.color_pair(1))
-    dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
+        some_pad.addstr(some_y_list_index+16,0,"=================",curses.color_pair(3))
+    some_pad.addstr(some_y_list_index+16,17,"                       ",curses.color_pair(1))
+
+def informations_displayer(curses,info_win,file_sigs_info,file_timestamps_info):
+    info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
+    info_win.addstr(2, 0, file_timestamps_info)
+    info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
+    info_win.addstr(10, 0, file_sigs_info)
+
+def update_lists(current_dir):
+    elements = file_list.get_file_list(current_dir)
+    list_of_files = elements["files"]
+    list_of_dirs = elements["dirs"]
+    list_of_dirs.insert(0,"..")
+    return list_of_files, list_of_dirs
+
+def scroller(y_x_list_index,current_x_option,adder,up_or_down):
+    if up_or_down == "up":
+        value1 = current_x_option 
+        value2 = y_x_list_index
+    elif up_or_down == "down":
+        value1 = current_x_option - 1
+        value2 = y_x_list_index + 12
+    if value1 == value2:
+        y_x_list_index += adder
+    current_x_option += adder
+    return y_x_list_index,current_x_option
 
 def main(stdscr):
-
-#------------------------------INITIALISATION----------------------------
 
     path_type = path_type_configuration()
     filesigs_path = os.path.dirname(os.path.abspath(__file__))+path_type+"file_sigs.json"
     timestamps_path = os.path.dirname(os.path.abspath(__file__))+path_type+"timestamps_patterns.json"
+    current_dir = os.getcwd()
+    list_of_files,list_of_dirs = update_lists(current_dir)
+    current_file_option = 0
+    current_dir_option = 0
+    dir0file1 = 1
+    y_dir_list_index = 0
+    y_file_list_index = 0
+
     curses.curs_set(0)
     stdscr.clear()
     stdscr.refresh()
     init_color_pairs(curses)
 
-#------------------------------PATH MANAGEMENT---------------------------
-
-
-    current_dir = os.getcwd()
-    list_of_files,list_of_dirs = update_lists(current_dir)
-
-    current_file_option = 0
-    current_dir_option = 0
-    dir0file1 = 1
-    stdscr.clear()
-
-#------------------------------WINDOWS CREATION--------------------------
-
     navbar_win = curses.newwin(4,120,0,0)
     info_win = curses.newwin(20,50,4,70)
+    files_pad = curses.newpad(100,60)
+    dirs_pad = curses.newpad(100,30)
 
-    files_pad= curses.newpad(100,60)
-    dirs_pad= curses.newpad(100,30)
-
-    y_dir_list_index = 0
-    y_file_list_index = 0
-
-    #loop
     while True:
 
+        #clear
         stdscr.refresh()
         navbar_win.clear()        
         files_pad.clear()
         dirs_pad.clear()
+        info_win.clear()
+
         #nav
         navbar_display(navbar_win,list_of_files[current_file_option],os.getcwd())
         navbar_win.refresh()
+
         #dirs
-        dir_list_display(curses,dirs_pad,list_of_dirs,y_dir_list_index,dir0file1,current_dir_option)
-#------------------------------FILES LIST--------------------------------
+        list_displayer(curses,dirs_pad,list_of_dirs,y_dir_list_index,dir0file1,0,current_dir_option,"Dirs")
+        dirs_pad.refresh(y_dir_list_index,0,4,0,20,30)
 
-        for i, file in enumerate(list_of_files):
-            if i == current_file_option and dir0file1 == 1 :
-                files_pad.addstr(i+2,0,file, curses.color_pair(4))
-            else:
-                files_pad.addstr(i+2,0,file,curses.color_pair(1))
-
-        #Top border
-        files_pad.addstr(y_file_list_index,0,"----Files list----",curses.color_pair(3))
-        files_pad.addstr(y_file_list_index,17,"            ",curses.color_pair(1))
-
-        #Srolling informations
-        if y_file_list_index != 0:
-            files_pad.addstr(y_file_list_index+1,0,"------ ↑↑↑ ------",curses.color_pair(5))
-            files_pad.addstr(y_file_list_index+1,17,"             ",curses.color_pair(1))
-        if current_file_option != len(list_of_files)-1 and len(list_of_files) >= 13 and y_file_list_index != len(list_of_files)-14:
-            files_pad.addstr(y_file_list_index+16,0,"------ ↓↓↓ ------",curses.color_pair(5))
-        else:
-            files_pad.addstr(y_file_list_index+16,0,"=================",curses.color_pair(3))
-        files_pad.addstr(y_file_list_index+16,17,"                       ",curses.color_pair(1))
-
+        #files
+        list_displayer(curses,files_pad,list_of_files,y_file_list_index,dir0file1,1,current_file_option,"Files")
         files_pad.refresh(y_file_list_index,0,4,30,20,60)
-
-#------------------------------FILES INFORMATION-------------------------
-
-        info_win.clear()
-        file_sigs_info = fs.get_information(current_dir + "/" + list_of_files[current_file_option], filesigs_path)
-        file_timestamps_info = tsp.get_timestamps_patterns_info(current_dir + "/" + list_of_files[current_file_option],timestamps_path)
-        info_win.addstr(0, 0, "---File metadatas---",curses.color_pair(3))
-        info_win.addstr(2, 0, file_timestamps_info)
-        info_win.addstr(8, 0, "---File Type Informations---",curses.color_pair(3))
-        info_win.addstr(10, 0, file_sigs_info)
+        
+        #informations
+        file_sigs_info = fs.get_information(current_dir + path_type + list_of_files[current_file_option], filesigs_path)
+        file_timestamps_info = tsp.get_timestamps_patterns_info(current_dir + path_type + list_of_files[current_file_option],timestamps_path)
+        informations_displayer(curses,info_win,file_sigs_info,file_timestamps_info)
         info_win.refresh()
 
-#------------------------------KEY GETTING-------------------------------
-
+        #keygetting
         stdscr.refresh()
         key = stdscr.getch()
 
-        if(dir0file1 == 0):
+        if key == curses.KEY_UP:
+            adder = -1
+            up_or_down = "up"
+            if dir0file1 == 0 and current_dir_option > 0:
+                y_dir_list_index,current_dir_option = scroller(y_dir_list_index,current_dir_option,adder,up_or_down)
+            elif dir0file1 == 1 and current_file_option > 0:
+                y_file_list_index,current_file_option = scroller(y_file_list_index,current_file_option,adder,up_or_down)
 
-            if key == curses.KEY_UP and current_dir_option > 0:
-                #Scrolling list management
-                if current_dir_option == y_dir_list_index:
-                    y_dir_list_index += -1
-                current_dir_option -= 1
+        elif key == curses.KEY_DOWN:
+            adder = 1
+            up_or_down = "down"
+            if dir0file1 == 0 and current_dir_option < len(list_of_dirs) - 1:
+                y_dir_list_index,current_dir_option = scroller(y_dir_list_index,current_dir_option,adder,up_or_down)
+            elif dir0file1 == 1 and current_file_option < len(list_of_files) - 1:
+                y_file_list_index,current_file_option = scroller(y_file_list_index,current_file_option,adder,up_or_down)
 
-            elif key == curses.KEY_DOWN and current_dir_option < len(list_of_dirs) - 1:
-                if current_dir_option - 1 == y_dir_list_index + 12:
-                    y_dir_list_index += 1
-                current_dir_option += 1
-                
-            elif key == curses.KEY_RIGHT:
-                dir0file1 = 1
-                current_file_option = 0
+        elif key == curses.KEY_LEFT:
+            dir0file1 = 0
+            current_dir_option = 0
+            y_dir_list_index = 0
 
-            elif key == ord('a'):
-                if current_dir_option == 0:
-                    try:
-                        os.chdir(os.getcwd()+path_type+"..")
-                    except:
-                        print("err")
-                else:
-                    os.chdir(os.getcwd() + path_type + list_of_dirs[current_dir_option])
-                current_dir = os.getcwd()
-                list_of_files, list_of_dirs = update_lists(current_dir)
-                current_file_option = 0
-                current_dir_option = 0
-                dir0file1 = 0
-                y_dir_list_index = 0
-                
-            elif key == 27:
-                break
+        if key == curses.KEY_RIGHT:
+            dir0file1 = 1
+            current_file_option = 0
 
-        elif(dir0file1 == 1):
-
-            if key == curses.KEY_UP and current_file_option > 0:
-                if current_file_option == y_file_list_index:
-                    y_file_list_index += -1
-                current_file_option -= 1
-            elif key == curses.KEY_DOWN and current_file_option < len(list_of_files) - 1:
-                if current_file_option -1 == y_file_list_index + 12:
-                    y_file_list_index += 1
-                current_file_option += 1
-            elif key == curses.KEY_LEFT:
-                dir0file1 = 0
-                current_dir_option = 0
-                y_dir_list_index = 0
-        
-        if key == 27:
+        elif key == ord('a'):
+            if current_dir_option == 0:
+                try:
+                    os.chdir(os.getcwd()+path_type+"..")
+                except:
+                    print("err")
+            else:
+                os.chdir(os.getcwd() + path_type + list_of_dirs[current_dir_option])
+            current_dir = os.getcwd()
+            list_of_files, list_of_dirs = update_lists(current_dir)
+            current_file_option = 0
+            current_dir_option = 0
+            dir0file1 = 0
+            y_dir_list_index = 0
+            
+        elif key == 27:
             break
 
 if __name__ == "__main__":
