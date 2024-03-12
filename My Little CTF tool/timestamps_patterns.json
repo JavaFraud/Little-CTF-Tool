@@ -3,7 +3,7 @@
     [
         {
         "pattern": "A > C > M",
-        "description": "New Entryyyyy"
+        "description": "File Accessed after modification"
         },
         {
         "pattern": "A = C = M",
